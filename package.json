@@ -1,0 +1,19 @@
+{
+  "name": "ts-bun",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "play": "bun --watch run src/index.ts",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/bun": "latest",
+    "bun": "latest",
+    "prettier": "latest",
+    "typescript": "latest"
+  }
+}
