@@ -8,21 +8,17 @@
     "dev": "bun --watch run src/index.ts",
     "start": "bun run src/index.ts",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@eslint/js": "^9.0.0",
     "@types/bun": "latest",
     "@types/eslint__js": "^8.42.3",
     "bun": "latest",
-    "eslint": "^8.56.0",
     "prettier": "latest",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.7.0"
+    "type-testing": "^0.2.0",
+    "typescript": "^5.4.5"
   }
 }
