@@ -1,4 +1,6 @@
-const input = await Bun.file("./src/2024-advent-of-code/inputs/01.txt").text();
+const input = await Bun.file(
+  Bun.resolveSync("./inputs/01.txt", import.meta.dir)
+).text();
 
 const lines = input.split("\n");
 
@@ -22,6 +24,6 @@ const similarityScore = listA.reduce((acc, value) => {
 }, 0);
 
 console.table({
-  totalDistance, // Correct answer: 2066446
-  similarityScore, // Correct answer: 24931009
+  totalDistance, // Right answer: 2066446
+  similarityScore, // Right answer: 24931009
 });
