@@ -9,14 +9,14 @@ const reports = input
 const allowedDiffs = new Set([1, 2, 3]);
 
 const isReportSafe = (report: number[]) => {
-  if (!allowedDiffs.has(Math.abs(report[1] - report[0]))) {
+  if (!allowedDiffs.has(Math.abs(report[1]! - report[0]!))) {
     return false;
   }
 
-  const expectedSign = Math.sign(report[1] - report[0]);
+  const expectedSign = Math.sign(report[1]! - report[0]!);
   for (let i = 2; i < report.length; i++) {
-    const prev = report[i - 1];
-    const curr = report[i];
+    const prev = report[i - 1]!;
+    const curr = report[i]!;
     const actualSign = Math.sign(curr - prev);
     if (
       actualSign !== expectedSign ||

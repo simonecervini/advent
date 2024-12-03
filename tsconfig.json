@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": true,
 
     // Some stricter flags
-    "noPropertyAccessFromIndexSignature": true
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true
   }
 }

@@ -8,15 +8,15 @@ const listA: number[] = [];
 const listB: number[] = [];
 for (const line of lines) {
   const [a, b] = line.trim().split(/\s+/);
-  listA.push(parseInt(a, 10));
-  listB.push(parseInt(b, 10));
+  listA.push(parseInt(a!, 10));
+  listB.push(parseInt(b!, 10));
 }
 
 listA.sort((a, b) => a - b);
 listB.sort((a, b) => a - b);
 
 const totalDistance = listA.reduce((acc, value, index) => {
-  return acc + Math.abs(value - listB[index]);
+  return acc + Math.abs(value - listB[index]!);
 }, 0);
 
 const similarityScore = listA.reduce((acc, value) => {
