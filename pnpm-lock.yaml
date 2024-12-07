@@ -9,7 +9,7 @@ dependencies:
     specifier: latest
     version: 1.1.14
   bun:
-    specifier: latest
+    specifier: 1.1.38
     version: 1.1.38
   prettier:
     specifier: latest

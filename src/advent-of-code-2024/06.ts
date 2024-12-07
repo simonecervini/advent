@@ -72,7 +72,7 @@ function writeBoard(item: Vector2 & { value: string }, board: Board) {
 }
 
 function getInitialPosition(board: Board) {
-  const entry = Array.from(board.entries()).find(([_, value]) => value === "^");
+  const entry = board.entries().find(([_, value]) => value === "^");
   if (!entry) throw new Error();
   const [x, y] = entry[0].split(",");
   if (!x || !y) throw new Error();
@@ -100,9 +100,10 @@ const { board: board1 } = runSimulation({
   initialState: boardInitialState,
 });
 
-const answerPart1 = Array.from(
-  Array.from(board1.values()).filter((value) => value === "X")
-).length;
+const answerPart1 = board1
+  .values()
+  .filter((value) => value === "X")
+  .toArray().length;
 console.log("Answer Part 1:", answerPart1); // Right answer: 5208
 
 let answerPart2 = 0;
