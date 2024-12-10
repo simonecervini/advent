@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect } from "bun:test";
 
 const input = (
   await Bun.file(Bun.resolveSync("./inputs/09.txt", import.meta.dir)).text()
