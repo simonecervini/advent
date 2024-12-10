@@ -1,21 +1,21 @@
 {
   "name": "advent",
-  "version": "0.0.1",
+  "version": "12.25.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "bun --watch run src/index.ts",
-    "start": "bun run src/index.ts",
+    "dev": "bun run dev.ts",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@types/bun": "1.1.14",
     "bun": "1.1.38",
+    "commander": "^12.1.0",
     "prettier": "latest",
     "type-testing": "^0.2.0",
     "typescript": "latest"
