@@ -3,8 +3,9 @@ import { expect } from "bun:test";
 const input = (
   await Bun.file(Bun.resolveSync("./inputs/09.txt", import.meta.dir)).text()
 ).trim();
+const exampleInput = "2333133121414131402";
 
-if (!/^\d+$/g.test(input)) {
+if ([input, exampleInput].some((x) => !/^\d+$/g.test(x))) {
   throw new Error("Invalid input");
 }
 
@@ -23,16 +24,6 @@ function parseBlocks(input: string) {
     }
   }
   return blocks;
-}
-
-function swap<T>(indices: [number, number], array: T[]): T[] {
-  const [i, j] = indices;
-  let ti = structuredClone(array[i]);
-  let tj = structuredClone(array[j]);
-  if (ti === undefined || tj === undefined) throw new Error();
-  array[i] = tj;
-  array[j] = ti;
-  return array;
 }
 
 function checksum(blocks: Block[]) {
@@ -55,6 +46,13 @@ function groupBlocks(blocks: Block[]): { value: Block; len: number }[] {
   }
   return groups;
 }
+expect(groupBlocks(parseBlocks("12345"))).toEqual([
+  { value: 0, len: 1 },
+  { value: DOT, len: 2 },
+  { value: 1, len: 3 },
+  { value: DOT, len: 4 },
+  { value: 2, len: 5 },
+]);
 
 function ungroupBlocks(groups: ReturnType<typeof groupBlocks>) {
   const blocks: Block[] = [];
@@ -71,7 +69,10 @@ function getAnswer1(input: { blocks: Block[] }) {
     if (block === DOT) continue;
     const firstFreeSpaceIndex = blocks.findIndex((x, j) => x === DOT && j < i);
     if (firstFreeSpaceIndex >= 0) {
-      swap([i, firstFreeSpaceIndex], blocks);
+      [blocks[i]!, blocks[firstFreeSpaceIndex]!] = [
+        blocks[firstFreeSpaceIndex]!,
+        blocks[i]!,
+      ];
     }
   }
   return checksum(blocks);
@@ -80,9 +81,9 @@ function getAnswer1(input: { blocks: Block[] }) {
 function getAnswer2(input: { blocks: Block[] }) {
   let groups = groupBlocks(input.blocks);
 
-  for (const group of groups
-    .toReversed()
-    .filter((g) => typeof g.value === "number")) {
+  for (const group of groups.toReversed()) {
+    if (group.value === DOT) continue;
+
     const groupIndex = groups.findIndex((g) => g.value === group.value);
 
     const freeGroupIndex = groups.findIndex(
@@ -96,11 +97,7 @@ function getAnswer2(input: { blocks: Block[] }) {
       freeGroup.len = group.len;
       groups[groupIndex]!.value = DOT;
       if (padding > 0) {
-        groups = [
-          ...groups.slice(0, freeGroupIndex + 1),
-          { len: padding, value: DOT },
-          ...groups.slice(freeGroupIndex + 1),
-        ];
+        groups.splice(freeGroupIndex + 1, 0, { len: padding, value: DOT });
       }
       groups = groupBlocks(ungroupBlocks(groups));
     }
@@ -111,20 +108,18 @@ function getAnswer2(input: { blocks: Block[] }) {
   return checksum(orderedBlocks);
 }
 
+const exampleAnswer1 = getAnswer1({ blocks: parseBlocks(exampleInput) });
+const exampleAnswer2 = getAnswer2({ blocks: parseBlocks(exampleInput) });
+expect(exampleAnswer1).toEqual(1928);
+expect(exampleAnswer2).toEqual(2858);
+
+console.log("Answer 1 (example):", exampleAnswer1);
+console.log("Answer 2 (example):", exampleAnswer2);
+
 const answer1 = getAnswer1({ blocks: parseBlocks(input) });
 const answer2 = getAnswer2({ blocks: parseBlocks(input) });
+expect(answer1).toEqual(6390180901651);
+expect(answer2).toEqual(6412390114238);
 
 console.log("Answer 1:", answer1);
 console.log("Answer 2:", answer2);
-
-// -- Tests --
-
-expect(swap([0, 1], [1, 2, 3, 4])).toEqual([2, 1, 3, 4]);
-expect(swap([1, 3], [1, 2, 3, 4])).toEqual([1, 4, 3, 2]);
-expect(groupBlocks(parseBlocks("12345"))).toEqual([
-  { value: 0, len: 1 },
-  { value: DOT, len: 2 },
-  { value: 1, len: 3 },
-  { value: DOT, len: 4 },
-  { value: 2, len: 5 },
-]);
