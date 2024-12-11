@@ -29,6 +29,7 @@ program
       ],
       {
         stdout: "inherit",
+        stderr: "inherit",
       }
     );
   });
@@ -59,6 +60,7 @@ program
       ],
       {
         stdout: "inherit",
+        stderr: "inherit",
       }
     );
   });
