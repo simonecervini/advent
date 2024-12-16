@@ -10,9 +10,6 @@ export class Matrix<T> {
     if (!Number.isFinite(x) || !Number.isFinite(y)) {
       throw new TypeError("Coordinates must be finite numbers");
     }
-    if (x < 0 || y < 0) {
-      throw new RangeError("Negative coordinates are not allowed");
-    }
     return `${x},${y}`;
   }
 
