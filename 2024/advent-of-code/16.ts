@@ -37,19 +37,20 @@ const INPUTS = {
   ).text(),
 };
 
-const answers = {
-  part1: {
-    example1: optimizeCost(parseInput(INPUTS.example1)),
-    example2: optimizeCost(parseInput(INPUTS.example2)),
-    real: optimizeCost(parseInput(INPUTS.real)),
-  },
+const results = {
+  example1: optimizeCost(parseInput(INPUTS.example1)),
+  example2: optimizeCost(parseInput(INPUTS.example2)),
+  real: optimizeCost(parseInput(INPUTS.real)),
 };
 
-expect(answers.part1.example1).toBe(7036);
-expect(answers.part1.example2).toBe(11048);
-expect(answers.part1.real).toBe(88416);
+expect(results.example1.answer1).toBe(7036);
+expect(results.example2.answer1).toBe(11048);
+expect(results.real.answer1).toBe(88416);
+expect(results.example1.answer2).toBe(45);
+expect(results.example2.answer2).toBe(64);
+expect(results.real.answer2).toBe(442);
 
-console.table(answers);
+console.table(results);
 
 function optimizeCost(opts: {
   start: Vector2;
@@ -58,21 +59,23 @@ function optimizeCost(opts: {
 }) {
   const { start, end, grid } = opts;
 
-  const queue: Array<{ node: Node; cost: number }> = [];
-  queue.push({ node: { ...start, direction: "e" }, cost: 0 });
+  const queue: Array<{ node: Node; cost: number; path: Node[] }> = [];
+  queue.push({
+    node: { ...start, direction: "e" },
+    cost: 0,
+    path: [{ ...start, direction: "e" }],
+  });
 
   const visitedNodes = new Map<string, number>();
 
-  function enqueue(item: (typeof queue)[number]) {
-    queue.push(item);
-    queue.sort((a, b) => a.cost - b.cost);
-  }
+  let bestPaths: Node[][] = [];
+  let bestCost = Infinity;
 
   while (queue.length) {
     const item = queue.shift()!;
 
     const key = `${item.node.x},${item.node.y},${item.node.direction}`;
-    if (visitedNodes.get(key) ?? -Infinity >= item.cost) {
+    if (item.cost > (visitedNodes.get(key) ?? Infinity)) {
       continue;
     }
     visitedNodes.set(key, item.cost);
@@ -83,40 +86,67 @@ function optimizeCost(opts: {
     };
 
     if (nextPos.x === end.x && nextPos.y === end.y) {
-      return item.cost + 1;
+      const finalCost = item.cost + 1;
+      const finalPath = [
+        ...item.path,
+        { ...nextPos, direction: item.node.direction },
+      ];
+      if (finalCost < bestCost) {
+        bestPaths = [finalPath];
+        bestCost = finalCost;
+      } else if (finalCost === bestCost) {
+        bestPaths.push(finalPath);
+      }
+
+      continue;
     }
 
     if (grid.get(nextPos) === ".") {
-      enqueue({
-        node: {
-          x: nextPos.x,
-          y: nextPos.y,
-          direction: item.node.direction,
-        },
+      const nextNode = {
+        x: nextPos.x,
+        y: nextPos.y,
+        direction: item.node.direction,
+      };
+      queue.push({
+        node: nextNode,
         cost: item.cost + 1,
+        path: [...item.path, nextNode],
       });
     }
 
-    enqueue({
-      node: {
-        ...item.node,
-        direction:
-          DIRECTIONS[(DIRECTIONS.indexOf(item.node.direction) + 1) % 4]!,
-      },
+    const nextCwNode = {
+      ...item.node,
+      direction: DIRECTIONS[(DIRECTIONS.indexOf(item.node.direction) + 1) % 4]!,
+    };
+    queue.push({
+      node: nextCwNode,
       cost: item.cost + 1000,
+      path: [...item.path, nextCwNode],
     });
 
-    enqueue({
-      node: {
-        ...item.node,
-        direction:
-          DIRECTIONS[(DIRECTIONS.indexOf(item.node.direction) + 3) % 4]!,
-      },
+    const nextCcwNode = {
+      ...item.node,
+      direction: DIRECTIONS[(DIRECTIONS.indexOf(item.node.direction) + 3) % 4]!,
+    };
+    queue.push({
+      node: nextCcwNode,
       cost: item.cost + 1000,
+      path: [...item.path, nextCcwNode],
     });
+
+    queue.sort((a, b) => a.cost - b.cost);
   }
 
-  throw new Error();
+  if (bestPaths.length === 0) {
+    throw new Error("No path found");
+  }
+
+  return {
+    answer1: bestCost,
+    answer2: new Set(
+      bestPaths.flatMap((path) => path.map((node) => `${node.x},${node.y}`))
+    ).size,
+  };
 }
 
 function parseInput(input: string) {
